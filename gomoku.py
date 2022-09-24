@@ -2,6 +2,7 @@ import glfw
 from OpenGL.GL import *
 from math import *  
 from enum import Enum
+#from Bot import *
 
 window = None
 
@@ -62,7 +63,7 @@ def key_callback(window, key, scancode, action, mods):
         if key == glfw.KEY_SPACE:
             circ.append([step[0]+scale/32,step[1]+scale/32])
             set_circ(step[0], step[1])
-            # ai_move()
+            #ai_move()
         if key == 257:  #enter (проверка отрисоки крестиков)
             cros.append([step[0] , step[1]])
 
@@ -137,6 +138,7 @@ def display():
 
 
 # def ai_move():
+#     Bot.next_move(table)
 
 
 def set_circ(x , y):
