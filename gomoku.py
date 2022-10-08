@@ -1,8 +1,7 @@
 import glfw
 from OpenGL.GL import *
 from math import *  
-from enum import Enum
-#from Bot import *
+from Bot import *
 
 window = None
 
@@ -19,18 +18,16 @@ step = [-scale/16,-scale/16]
 #точки определяющие место фигур
 circ = []
 cros = []
-
-class tit(Enum):
-    EMPT = 0
-    CIRC    = 1
-    CROS    = 2
   
+# пусто - 0
+# нолик - 1
+# крестик - 2
 
 table = []
 for i in range(15):
     table.append([])
     for j in range(15):
-        table[i].append(tit.EMPT)
+        table[i].append(0)
 
 
 def main():
@@ -63,9 +60,17 @@ def key_callback(window, key, scancode, action, mods):
         if key == glfw.KEY_SPACE:
             circ.append([step[0]+scale/32,step[1]+scale/32])
             set_circ(step[0], step[1])
-            #ai_move()
+
+            place = Bot.next_move(table)
+            if len(place) == 2:
+                place[0] = place[0]*(scale/16) - 8*scale/16
+                place[1] = place[1]*(scale/16) - 8*scale/16
+                cros.append(place)
+                set_cros(place[0] , place[1])
+
         if key == 257:  #enter (проверка отрисоки крестиков)
             cros.append([step[0] , step[1]])
+            set_cros(step[0], step[1])
 
 
 
@@ -135,12 +140,6 @@ def display():
     glfw.poll_events()
 
 
-
-
-# def ai_move():
-#     Bot.next_move(table)
-
-
 def set_circ(x , y):
     x += 8*scale/16
     y += 8*scale/16
@@ -148,7 +147,7 @@ def set_circ(x , y):
     x = x//(scale/16)
     y = y//(scale/16)
     
-    table[int(x)][int(y)] = tit.CIRC
+    table[int(x)][int(y)] = 1
 
 def set_cros(x , y):
     x += 8*scale/16
@@ -157,7 +156,7 @@ def set_cros(x , y):
     x = x//(scale/16)
     y = y//(scale/16)
     
-    table[int(x)][int(y)] = tit.CROS
+    table[int(x)][int(y)] = 2
 
 main()
 
