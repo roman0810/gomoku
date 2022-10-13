@@ -67,6 +67,10 @@ def key_callback(window, key, scancode, action, mods):
                 place[1] = place[1]*(scale/16) - 8*scale/16
                 cros.append(place)
                 set_cros(place[0] , place[1])
+            elif place[0] == -1:
+                print("-->> ВЫ ПОБЕДИЛИ!")
+            elif place[0] == -2:
+                print("-->> ПОБЕДИЛ КОМПЬЮТЕР!")
 
         if key == 257:  #enter (проверка отрисоки крестиков)
             cros.append([step[0] , step[1]])
@@ -159,19 +163,3 @@ def set_cros(x , y):
     table[int(x)][int(y)] = 2
 
 main()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

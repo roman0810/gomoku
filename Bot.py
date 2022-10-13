@@ -39,6 +39,7 @@ def find_cros_line():
 	return best
 
 def attac(table , cros):
+	print("АТАКА!!!")
 	if cros[0] == 73:
 		for i in range(5):
 			if table[cros[1]+i][cros[2]+i] == 0:
@@ -64,9 +65,32 @@ def attac(table , cros):
 
 def deffence(table , circ):
 	print("ОБОРОНА СУКААААА!!!")
+	#нет лучшего постоянного решения чем временное воткнуть сюда функцию атаки
+	if circ[0] == 73:
+		for i in range(5):
+			if table[circ[1]+i][circ[2]+i] == 0:
+				return [circ[1]+i , circ[2]+i]
+
+	elif circ[0] == 15:
+		for i in range(5):
+			if table[circ[1]+i][circ[2]-i] == 0:
+				return [circ[1]+i , circ[2]-i]
+
+	elif circ[0] == 62:
+		for i in range(5):
+			if table[circ[1]][circ[2]+i] == 0:
+				return [circ[1] , circ[2]+i]
+
+	elif circ[0] == 84:
+		for i in range(5):
+			if table[circ[1]+i][circ[2]] == 0:
+				return [circ[1]+i , circ[2]]
+	else:
+		return None
 
 
 def find_rand_circ(table):
+	print("РАНДОМ")
 	circs = []
 	for x in range(len(table)):
 		for y in range(len(table[x])):
@@ -94,15 +118,33 @@ def get_cords(table):
 	circ = find_circ_line()
 	cros = find_cros_line()
 
-	if cros != [] and circ != []:
-		if circ[3] > cros[3]:
+	crosw = 0
+	circw = 0
+
+	if cros != []:
+		crosw = cros[3]
+	if circ != []:
+		circw = circ[3]
+
+
+	#проверка на конец игры
+	if circw == 999:
+		return [-1]
+	elif crosw == 999:
+		return [-2]		
+
+	if cros != [] or circ != []:
+		#если игра не окончена то действуем
+		if circw > crosw:
 			#ломаем линию соперника
 			return deffence(table , circ)
-		else:
+		elif circw <= crosw:
 			#строим свою
 			return attac(table , cros)
+		else:
+			#если нет достойных линий для хода, то ходим рядом со случаенным ноликом
+			return find_rand_circ(table)
 	else:
-		#если нет достойных линий для хода, то ходим рядом со случаенным ноликом
 		return find_rand_circ(table)
 
 
@@ -128,6 +170,8 @@ def get_weight(StartF , EndF , Smet):
 			return 6
 		elif Smet == 4:
 			return 100
+		elif Smet == 5:
+			return 999
 	#полуоткрытые линии 
 	elif StartF and not EndF or not StartF and EndF:
 		if Smet == 2:
@@ -136,6 +180,8 @@ def get_weight(StartF , EndF , Smet):
 			return 3
 		elif Smet == 4:
 			return 99
+		elif Smet == 5:
+			return 999
 	#закрытые линии
 	elif not StartF and not EndF:
 		if Smet == 2:
@@ -143,7 +189,9 @@ def get_weight(StartF , EndF , Smet):
 		elif Smet == 3:
 			return 3
 		elif Smet == 4:
-			return 99		
+			return 99
+		elif Smet == 5:
+			return 999		
 
 
 #двигаем буфер из 5 клеток по возможной линии
@@ -280,7 +328,7 @@ def start_search(table , obj , x , y):
 
 
 def get_line(table , obj):
-	global circ_st , checked
+	global circ_st , cros_st , checked
 
 	if obj == 1:
 		#проходка по клеткам с ноликами кроме уже проверенных
